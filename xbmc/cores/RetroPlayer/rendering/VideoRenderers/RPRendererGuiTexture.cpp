@@ -56,6 +56,10 @@ bool CRenderBufferPoolGuiTexture::IsCompatible(const CRenderVideoSettings &rende
   if (renderSettings.GetScalingMethod() != m_scalingMethod)
     return false;
 
+  // Shaders not supported
+  if (!renderSettings.GetShaderPreset().empty())
+    return false;
+
   return true;
 }
 
@@ -80,6 +84,15 @@ bool CRPRendererGuiTexture::Supports(RENDERFEATURE feature) const
   {
     return true;
   }
+
+  return false;
+}
+
+bool CRPRendererGuiTexture::Supports(SCALINGMETHOD method) const
+{
+  if (method == SCALINGMETHOD::LINEAR ||
+      method == SCALINGMETHOD::NEAREST)
+    return true;
 
   return false;
 }

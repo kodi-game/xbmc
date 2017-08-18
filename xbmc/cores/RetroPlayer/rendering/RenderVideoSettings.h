@@ -37,6 +37,9 @@ namespace RETRO
     std::string GetVideoFilter() const;
     void SetVideoFilter(const std::string &videoFilter);
 
+    const std::string &GetShaderPreset() const { return m_shaderPreset; }
+    void SetShaderPreset(const std::string &shaderPreset) { m_shaderPreset = shaderPreset; }
+
     SCALINGMETHOD GetScalingMethod() const { return m_scalingMethod; }
     void SetScalingMethod(SCALINGMETHOD method) { m_scalingMethod = method; }
 
@@ -47,6 +50,7 @@ namespace RETRO
     void SetRenderRotation(unsigned int rotationDegCCW) { m_rotationDegCCW = rotationDegCCW; }
 
   private:
+    std::string m_shaderPreset;
     SCALINGMETHOD m_scalingMethod;
     VIEWMODE m_viewMode;
     unsigned int m_rotationDegCCW;

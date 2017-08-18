@@ -22,6 +22,11 @@ extern "C" {
 
 namespace KODI
 {
+namespace SHADER
+{
+  class IVideoShaderPreset;
+}
+
 namespace RETRO
 {
   class CRenderContext;
@@ -48,9 +53,11 @@ namespace RETRO
     void PreRender(bool clear);
     void SetBuffer(IRenderBuffer *buffer);
     void RenderFrame(bool clear, uint8_t alpha);
+    void SetSpeed(double speed);
 
     // Feature support
     virtual bool Supports(RENDERFEATURE feature) const = 0;
+    virtual bool Supports(SCALINGMETHOD method) const = 0;
     bool IsCompatible(const CRenderVideoSettings &settings) const;
     virtual SCALINGMETHOD GetDefaultScalingMethod() const = 0;
 
@@ -62,6 +69,8 @@ namespace RETRO
     const CRenderSettings &GetRenderSettings() const { return m_renderSettings; }
 
     // Set render settings
+    void SetShaderPreset(const std::string &presetPath);
+
     void SetScalingMethod(SCALINGMETHOD method);
     void SetViewMode(VIEWMODE viewMode);
     void SetRenderRotation(unsigned int rotationDegCCW);
@@ -89,6 +98,13 @@ namespace RETRO
     // Geometry properties
     CRect m_sourceRect;
     std::array<CPoint, 4> m_rotatedDestCoords{};
+
+    // ====== Video Shader Members =====
+    void UpdateVideoShaders();
+    std::unique_ptr<SHADER::IVideoShaderPreset> m_shaderPreset;
+
+    bool m_shadersNeedUpdate;
+    bool m_bUseShaderPreset;
 
   private:
     /*!

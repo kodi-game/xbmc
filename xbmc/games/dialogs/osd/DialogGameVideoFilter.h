@@ -34,7 +34,16 @@ namespace GAME
   private:
     void InitVideoFilters();
 
+    static std::string GetLocalizedString(uint32_t code);
     static void GetProperties(const CFileItem &item, std::string &videoFilter, std::string &description);
+
+    struct ShaderPresetProperties
+    {
+      std::string path;
+      int nameIndex;
+      int categoryIndex;
+      int descriptionIndex;
+    };
 
     CFileItemList m_items;
 

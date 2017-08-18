@@ -7,6 +7,7 @@
  */
 
 #include "GameServices.h"
+#include "cores/RetroPlayer/rendering/VideoShaders/VideoShaderPresetFactory.h"
 #include "controllers/Controller.h"
 #include "controllers/ControllerManager.h"
 #include "games/GameSettings.h"
@@ -19,11 +20,14 @@ CGameServices::CGameServices(CControllerManager &controllerManager,
                              RETRO:: CGUIGameRenderManager &renderManager,
                              CSettings &settings,
                              PERIPHERALS::CPeripherals &peripheralManager,
-                             const CProfilesManager &profileManager) :
+                             const CProfilesManager &profileManager,
+                             ADDON::CAddonMgr &addons,
+                             ADDON::CBinaryAddonManager &binaryAddons) :
   m_controllerManager(controllerManager),
   m_gameRenderManager(renderManager),
   m_profileManager(profileManager),
-  m_gameSettings(new CGameSettings(settings))
+  m_gameSettings(new CGameSettings(settings)),
+  m_videoShaders(new SHADER::CVideoShaderPresetFactory(addons, binaryAddons))
 {
 }
 

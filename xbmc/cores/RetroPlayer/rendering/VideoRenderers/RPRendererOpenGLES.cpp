@@ -258,6 +258,11 @@ bool CRPRendererOpenGLES::Supports(RENDERFEATURE feature) const
   return false;
 }
 
+bool CRPRendererOpenGLES::Supports(SCALINGMETHOD method) const
+{
+  return SupportsScalingMethod(method);
+}
+
 bool CRPRendererOpenGLES::SupportsScalingMethod(SCALINGMETHOD method)
 {
   if (method == SCALINGMETHOD::NEAREST ||
