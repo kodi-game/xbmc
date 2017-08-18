@@ -24,6 +24,7 @@
 #include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 #include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
+#include "cores/RetroPlayer/rendering/VideoShaders/windows/VideoShaderTextureDX.h"
 
 #include <dxgi.h>
 #include <memory>
@@ -60,7 +61,7 @@ namespace RETRO
     // implementation of IRenderBuffer via CRenderBufferSysMem
     bool UploadTexture() override;
 
-    CD3DTexture *GetTarget() { return m_intermediateTarget.get(); }
+    SHADER::CShaderTextureCD3D *GetTarget() { return m_intermediateTarget.get(); }
 
   private:
     bool CreateTexture();
@@ -79,7 +80,7 @@ namespace RETRO
     const unsigned int m_height;
 
     AVPixelFormat m_targetPixFormat;
-    std::unique_ptr<CD3DTexture> m_intermediateTarget;
+    std::unique_ptr<SHADER::CShaderTextureCD3D> m_intermediateTarget;
 
     SwsContext *m_swsContext = nullptr;
   };
@@ -117,6 +118,7 @@ namespace RETRO
 
     // implementation of CRPBaseRenderer
     bool Supports(RENDERFEATURE feature) const override;
+    bool Supports(SCALINGMETHOD method) const override;
     SCALINGMETHOD GetDefaultScalingMethod() const override { return DEFAULT_SCALING_METHOD; }
 
     static bool SupportsScalingMethod(SCALINGMETHOD method);
@@ -132,7 +134,12 @@ namespace RETRO
     void RenderInternal(bool clear, uint8_t alpha) override;
 
   private:
+    void CompileOutputShaders(SCALINGMETHOD defaultScalingMethod);
     void Render(CD3DTexture *target);
+
+    SCALINGMETHOD m_prevScalingMethod = SCALINGMETHOD::AUTO;
+    SHADER::CShaderTextureCD3D m_targetTexture;
+    std::map<SCALINGMETHOD, std::shared_ptr<CRPWinOutputShader>> m_outputShaders;
   };
 }
 }

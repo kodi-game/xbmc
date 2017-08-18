@@ -208,7 +208,9 @@ bool CServiceManager::InitStageThree()
     *m_gameRenderManager,
     *m_settings,
     *m_peripherals,
-    *m_profileManager));
+    *m_profileManager,
+    *m_addonMgr,
+    *m_binaryAddonManager));
 
   m_contextMenuManager->Init();
   m_PVRManager->Init();
