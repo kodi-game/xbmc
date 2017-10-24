@@ -18,6 +18,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XMLUtils.h"
 #include "URL.h"
 
 #include <stdlib.h>
@@ -28,7 +29,7 @@
 using namespace KODI;
 using namespace GAME;
 
-#define PRESETS_ADDON_NAME "game.shader.presets"
+#define SHADER_MANIFEST_PATH  "special://xbmc/system/shaders/presets/shader-manifest.xml"
 
 namespace
 {
@@ -96,16 +97,14 @@ void CDialogGameVideoFilter::InitVideoFilters()
   // Add shader presets
   std::vector<ShaderPresetProperties> shaderPresets;
 
-  // TODO: Have the add-on give us the xml as a string (or parse it)
-  static const std::string addonPath = std::string("special://xbmcbinaddons/") + PRESETS_ADDON_NAME;
-  static const std::string xmlPath = addonPath + "/resources/ShaderPresetsDefault.xml";
-  std::string basePath = URIUtils::GetBasePath(xmlPath);
+  static const std::string xmlPath = SHADER_MANIFEST_PATH;
+  const std::string basePath = URIUtils::GetBasePath(xmlPath);
 
   CXBMCTinyXML xml = CXBMCTinyXML(xmlPath);
 
   if (!xml.LoadFile())
   {
-    CLog::Log(LOGERROR, "%s - Couldn't load shader presets from default .xml, %s", __FUNCTION__, CURL::GetRedacted(xmlPath).c_str());
+    CLog::Log(LOGERROR, "%s - Couldn't load shader presets: %s", __FUNCTION__, xml.ErrorDesc());
     return;
   }
 
@@ -114,9 +113,6 @@ void CDialogGameVideoFilter::InitVideoFilters()
 
   while ((child = root->IterateChildren(child)))
   {
-    if (child->FirstChild() == nullptr)
-      continue;
-
     ShaderPresetProperties shaderPreset;
 
     TiXmlNode* pathNode;
@@ -219,9 +215,51 @@ void CDialogGameVideoFilter::PostExit()
   m_items.Clear();
 }
 
+bool CDialogGameVideoFilter::IsCompatible(const TiXmlNode* presetNode)
+{
+  const TiXmlElement* presetElement = presetNode->ToElement();
+  if (presetElement == nullptr)
+    return false;
+
+  //! @todo Move this to RetroPlayer
+  enum class SHADER_LANGUAGE
+  {
+    GLSL,
+    HLSL,
+  };
+
+  //! @todo Get this from RetroPlayer
+#if defined(TARGET_WINDOWS)
+  SHADER_LANGUAGE type = SHADER_LANGUAGE::HLSL;
+#else
+  SHADER_LANGUAGE type = SHADER_LANGUAGE::GLSL;
+#endif
+
+  std::string strType;
+  switch (type)
+  {
+  case SHADER_LANGUAGE::GLSL:
+    strType = "glsl";
+    break;
+  case SHADER_LANGUAGE::HLSL:
+    strType = "hlsl";
+    break;
+  default:
+    break;
+  }
+
+  if (strType.empty())
+    return false;
+
+  if (XMLUtils::GetAttribute(presetElement, "type") != strType)
+    return false;
+
+  return true;
+}
+
 std::string CDialogGameVideoFilter::GetLocalizedString(uint32_t code)
 {
-  return g_localizeStrings.GetAddonString(PRESETS_ADDON_NAME, code);
+  return g_localizeStrings.Get(code);
 }
 
 void CDialogGameVideoFilter::GetProperties(const CFileItem &item, std::string &videoFilter, std::string &description)
