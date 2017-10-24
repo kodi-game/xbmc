@@ -24,6 +24,8 @@
 #include "cores/GameSettings.h"
 #include "FileItem.h"
 
+class TiXmlNode;
+
 namespace KODI
 {
 namespace GAME
@@ -45,6 +47,8 @@ namespace GAME
 
   private:
     void InitVideoFilters();
+
+    static bool IsCompatible(const TiXmlNode* presetNode);
 
     static std::string GetLocalizedString(uint32_t code);
     static void GetProperties(const CFileItem &item, std::string &videoFilter, std::string &description);
