@@ -24,7 +24,6 @@
 #include "games/controllers/ControllerTypes.h"
 #include "input/keyboard/KeyboardTypes.h"
 
-#include "libavcodec/avcodec.h"
 #include "libavutil/pixfmt.h"
 
 namespace KODI
@@ -64,13 +63,6 @@ namespace GAME
     static AVPixelFormat TranslatePixelFormat(GAME_PIXEL_FORMAT format);
 
     /*!
-     * \brief Translate video codec (Game API to FFMPEG).
-     * \param format The video codec to translate.
-     * \return Translated video codec format.
-     */
-    static AVCodecID TranslateVideoCodec(GAME_VIDEO_CODEC codec);
-
-    /*!
      * \brief Translate audio PCM format (Game API to AudioEngine).
      * \param format The audio PCM format to translate.
      * \return Translated audio PCM format.
@@ -83,13 +75,6 @@ namespace GAME
      * \return Translated audio channels.
      */
     static AEChannel TranslateAudioChannel(GAME_AUDIO_CHANNEL channel);
-
-    /*!
-     * \brief Translate audio codec (Game API to FFMPEG).
-     * \param format The audio codec to translate.
-     * \return Translated audio codec format.
-     */
-    static AVCodecID TranslateAudioCodec(GAME_AUDIO_CODEC codec);
 
     /*!
      * \brief Translate key modifiers (Kodi to Game API).

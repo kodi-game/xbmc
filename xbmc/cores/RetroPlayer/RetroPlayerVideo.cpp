@@ -44,30 +44,24 @@ CRetroPlayerVideo::~CRetroPlayerVideo()
   m_renderManager.Deinitialize();
 }
 
-bool CRetroPlayerVideo::OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, unsigned int orientationDeg)
+bool CRetroPlayerVideo::OpenStream(AVPixelFormat pixfmt, unsigned int nominalWidth, unsigned int nominalHeight, unsigned int maxWidth, unsigned int maxHeight, float aspectRatio)
 {
-  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Creating video stream - format %s, %ux%u, %u deg",
+  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Creating video stream - format %s, nominal %ux%u, max %ux%u",
       CRenderTranslator::TranslatePixelFormat(pixfmt),
-      width,
-      height,
-      orientationDeg);
+      nominalWidth,
+      nominalHeight,
+      maxWidth,
+      maxHeight);
 
   m_processInfo.SetVideoPixelFormat(pixfmt);
-  m_processInfo.SetVideoDimensions(width, height);
+  m_processInfo.SetVideoDimensions(nominalWidth, nominalHeight); // Report nominal height for now
 
-  return m_renderManager.Configure(pixfmt, width, height, orientationDeg);
+  return m_renderManager.Configure(pixfmt, nominalWidth, nominalHeight, maxWidth, maxHeight);
 }
 
-bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
+void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size, unsigned int width, unsigned int height, unsigned int orientationDegCCW)
 {
-  CLog::Log(LOGERROR, "RetroPlayer[VIDEO]: Encoded video stream not supported");
-
-  return false; //! @todo
-}
-
-void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
-{
-  m_renderManager.AddFrame(data, size);
+  m_renderManager.AddFrame(data, size, width, height, orientationDegCCW);
 }
 
 void CRetroPlayerVideo::CloseStream()

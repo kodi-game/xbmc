@@ -63,7 +63,6 @@ AVPixelFormat CGameClientTranslator::TranslatePixelFormat(GAME_PIXEL_FORMAT form
 {
   switch (format)
   {
-  case GAME_PIXEL_FORMAT_YUV420P:  return AV_PIX_FMT_YUV420P;
   case GAME_PIXEL_FORMAT_0RGB8888: return AV_PIX_FMT_0RGB32;
   case GAME_PIXEL_FORMAT_RGB565:   return AV_PIX_FMT_RGB565;
   case GAME_PIXEL_FORMAT_0RGB1555: return AV_PIX_FMT_RGB555;
@@ -71,17 +70,6 @@ AVPixelFormat CGameClientTranslator::TranslatePixelFormat(GAME_PIXEL_FORMAT form
     break;
   }
   return AV_PIX_FMT_NONE;
-}
-
-AVCodecID CGameClientTranslator::TranslateVideoCodec(GAME_VIDEO_CODEC codec)
-{
-  switch (codec)
-  {
-  case GAME_VIDEO_CODEC_H264: return AV_CODEC_ID_H264;
-  default:
-    break;
-  }
-  return AV_CODEC_ID_NONE;
 }
 
 AEDataFormat CGameClientTranslator::TranslatePCMFormat(GAME_PCM_FORMAT format)
@@ -123,17 +111,6 @@ AEChannel CGameClientTranslator::TranslateAudioChannel(GAME_AUDIO_CHANNEL channe
     break;
   }
   return AE_CH_NULL;
-}
-
-AVCodecID CGameClientTranslator::TranslateAudioCodec(GAME_AUDIO_CODEC codec)
-{
-  switch (codec)
-  {
-  case GAME_AUDIO_CODEC_OPUS: return AV_CODEC_ID_OPUS;
-  default:
-    break;
-  }
-  return AV_CODEC_ID_NONE;
 }
 
 GAME_KEY_MOD CGameClientTranslator::GetModifiers(KEYBOARD::Modifier modifier)

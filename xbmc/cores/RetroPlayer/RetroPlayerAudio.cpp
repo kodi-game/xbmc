@@ -46,7 +46,7 @@ CRetroPlayerAudio::~CRetroPlayerAudio()
   CloseStream();
 }
 
-bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout)
+bool CRetroPlayerAudio::OpenStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout)
 {
   if (m_pAudioStream != nullptr)
     CloseStream();
@@ -70,13 +70,6 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
   m_processInfo.SetAudioBitsPerSample(CAEUtil::DataFormatToUsedBits(audioFormat.m_dataFormat));
 
   return true;
-}
-
-bool CRetroPlayerAudio::OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout)
-{
-  CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Encoded audio stream not supported");
-
-  return true; //! @todo
 }
 
 void CRetroPlayerAudio::AddData(const uint8_t* data, unsigned int size)

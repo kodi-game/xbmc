@@ -37,8 +37,7 @@ namespace GAME
   public:
     virtual ~IGameAudioCallback() = default;
 
-    virtual bool OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
-    virtual bool OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
+    virtual bool OpenStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
     virtual void AddData(const uint8_t* data, unsigned int size) = 0;
     virtual void CloseStream() = 0;
   };
@@ -48,9 +47,8 @@ namespace GAME
   public:
     virtual ~IGameVideoCallback() = default;
 
-    virtual bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, unsigned int orientationDeg) = 0;
-    virtual bool OpenEncodedStream(AVCodecID codec) = 0;
-    virtual void AddData(const uint8_t* data, unsigned int size) = 0;
+    virtual bool OpenStream(AVPixelFormat pixfmt, unsigned int nominalWidth, unsigned int nominalHeight, unsigned int maxWidth, unsigned int maxHeight, float aspectRatio) = 0;
+    virtual void AddData(const uint8_t* data, unsigned int size, unsigned int width, unsigned int height, unsigned int orientationDegCCW) = 0;
     virtual void CloseStream() = 0;
   };
 
