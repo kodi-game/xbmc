@@ -78,7 +78,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   }
 
   // Check if we should open in standalone mode
-  const bool bStandalone = fileCopy.GetPath().empty();
+  const bool bStandalone = fileCopy.GetDynPath().empty();
 
   m_processInfo.reset(CRPProcessInfo::CreateInstance());
   if (!m_processInfo)
@@ -123,7 +123,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 
       if (!bStandalone)
       {
-        std::string redactedPath = CURL::GetRedacted(fileCopy.GetPath());
+        std::string redactedPath = CURL::GetRedacted(fileCopy.GetDynPath());
         CLog::Log(LOGINFO, "RetroPlayer[PLAYER]: Opening: %s", redactedPath.c_str());
         bSuccess = m_gameClient->OpenFile(fileCopy, *m_streamManager, m_input.get());
       }
@@ -147,7 +147,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     CSavestateDatabase savestateDb;
 
     std::unique_ptr<ISavestate> save = savestateDb.CreateSavestate();
-    if (savestateDb.GetSavestate(fileCopy.GetPath(), *save))
+    if (savestateDb.GetSavestate(fileCopy.GetDynPath(), *save))
     {
       // Check if game client is the same
       if (save->GameClientID() != m_gameClient->ID())
