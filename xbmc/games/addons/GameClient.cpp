@@ -218,12 +218,14 @@ void CGameClient::Unload()
 
 bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamManager, IGameInputCallback *input)
 {
+  const std::string filePath = file.GetDynPath();
+
   // Check if we should open in standalone mode
-  if (file.GetPath().empty())
+  if (filePath.empty())
     return false;
 
   // Some cores "succeed" to load the file even if it doesn't exist
-  if (!XFILE::CFile::Exists(file.GetPath()))
+  if (!XFILE::CFile::Exists(filePath))
   {
 
     // Failed to play game
@@ -233,7 +235,7 @@ bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamM
   }
 
   // Resolve special:// URLs
-  CURL translatedUrl(CSpecialProtocol::TranslatePath(file.GetPath()));
+  CURL translatedUrl(CSpecialProtocol::TranslatePath(filePath));
 
   // Remove file:// from URLs if add-on doesn't support VFS
   if (!m_bSupportsVFS)
@@ -263,7 +265,7 @@ bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamM
     return false;
   }
 
-  if (!InitializeGameplay(file.GetPath(), streamManager, input))
+  if (!InitializeGameplay(filePath, streamManager, input))
   {
     return false;
   }
