@@ -77,6 +77,22 @@ bool CRetroPlayerVideo::OpenStream(const StreamProperties& properties)
   return m_bOpen;
 }
 
+bool CRetroPlayerVideo::GetStreamBuffer(unsigned int width, unsigned int height, StreamBuffer& buffer)
+{
+  VideoStreamBuffer& videoBuffer = reinterpret_cast<VideoStreamBuffer&>(buffer);
+
+  if (m_bOpen)
+  {
+    return m_renderManager.GetVideoBuffer(width,
+                                          height,
+                                          videoBuffer.pixfmt,
+                                          videoBuffer.data,
+                                          videoBuffer.size);
+  }
+
+  return false;
+}
+
 void CRetroPlayerVideo::AddStreamData(const StreamPacket &packet)
 {
   const VideoStreamPacket& videoPacket = reinterpret_cast<const VideoStreamPacket&>(packet);

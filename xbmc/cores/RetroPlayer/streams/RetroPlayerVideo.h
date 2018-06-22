@@ -43,6 +43,13 @@ namespace RETRO
     float pixelAspectRatio;
   };
 
+  struct VideoStreamBuffer
+  {
+    AVPixelFormat pixfmt;
+    uint8_t *data;
+    size_t size;
+  };
+
   struct VideoStreamPacket
   {
     unsigned int width;
@@ -65,7 +72,7 @@ namespace RETRO
 
     // implementation of IRetroPlayerStream
     bool OpenStream(const StreamProperties& properties) override;
-    bool GetStreamBuffer(unsigned int width, unsigned int height, StreamBuffer& buffer) override { return false; }
+    bool GetStreamBuffer(unsigned int width, unsigned int height, StreamBuffer& buffer) override;
     void AddStreamData(const StreamPacket &packet) override;
     void CloseStream() override;
 

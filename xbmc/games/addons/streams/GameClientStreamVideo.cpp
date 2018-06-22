@@ -56,7 +56,7 @@ void CGameClientStreamVideo::CloseStream()
 
 void CGameClientStreamVideo::AddData(const game_stream_packet& packet)
 {
-  if (packet.type != GAME_STREAM_VIDEO)
+  if (packet.type != GAME_STREAM_VIDEO && packet.type != GAME_STREAM_SW_FRAMEBUFFER)
     return;
 
   if (m_stream != nullptr)
