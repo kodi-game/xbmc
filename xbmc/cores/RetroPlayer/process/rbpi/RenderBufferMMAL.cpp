@@ -19,6 +19,7 @@
  */
 
 #include "RenderBufferMMAL.h"
+#include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
 #include "platform/linux/RBP.h"
 
 using namespace KODI;
@@ -106,12 +107,14 @@ CRenderBufferMMALRGB::CRenderBufferMMALRGB(MMAL_BUFFER_HEADER_T *buffer) :
 {
 }
 
-bool CRenderBufferMMALRGB::Allocate(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int size)
+bool CRenderBufferMMALRGB::Allocate(AVPixelFormat format, unsigned int width, unsigned int height)
 {
   // Initialize IRenderBuffer
   m_format = format;
   m_width = width;
   m_height = height;
+
+  const size_t size = CRenderBufferSysMem::GetBufferSize(m_format, m_width, m_height);
 
   // Allocate GPU memory
   m_gmem.reset(new CGPUMEM(size, true));

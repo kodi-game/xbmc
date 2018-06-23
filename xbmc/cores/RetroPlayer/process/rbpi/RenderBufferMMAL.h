@@ -66,7 +66,7 @@ namespace RETRO
     ~CRenderBufferMMALRGB() override = default;
 
     // Partial implementation of IRenderBuffer via CRenderBufferMMAL
-    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int size) override;
+    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
 
   protected:
     // implementation of CRenderBufferMMAL
