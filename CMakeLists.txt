@@ -116,6 +116,7 @@ set(required_deps ASS
                   CrossGUID
                   Curl
                   FFMPEG
+                  FlatBuffers
                   Fmt
                   FreeType
                   FriBidi
@@ -241,7 +242,10 @@ if(WIN32)
   set(RESOURCES $<TARGET_OBJECTS:resources>)
 endif()
 
-include_directories(${INCLUDES} ${SYSTEM_INCLUDES})
+# Generate messages
+core_add_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/messages/flatbuffers/*.txt)
+
+include_directories(${INCLUDES} ${SYSTEM_INCLUDES} ${EXTRA_INCLUDES})
 add_compile_options(${ARCH_DEFINES} "${SYSTEM_DEFINES}" ${DEP_DEFINES} ${PATH_DEFINES})
 
 set(core_DEPENDS "" CACHE STRING "" FORCE)
@@ -286,7 +290,7 @@ endif()
 
 # main library (used for main binary and tests)
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
-add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid fmt fstrcmp ${PLATFORM_GLOBAL_TARGET_DEPS})
+add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid fmt fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 
 # Other files (IDE)
