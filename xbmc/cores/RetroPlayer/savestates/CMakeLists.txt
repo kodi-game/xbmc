@@ -1,16 +1,16 @@
-set(SOURCES Savestate.cpp
-            SavestateDatabase.cpp
-            SavestateReader.cpp
-            SavestateTranslator.cpp
+set(SOURCES SavestateDatabase.cpp
+            SavestateFlatBuffer.cpp
             SavestateUtils.cpp
-            SavestateWriter.cpp)
+)
 
-set(HEADERS Savestate.h
+set(HEADERS ISavestate.h
             SavestateDatabase.h
-            SavestateDefines.h
-            SavestateReader.h
-            SavestateTranslator.h
+            SavestateFlatBuffer.h
+            SavestateTypes.h
             SavestateUtils.h
-            SavestateWriter.h)
+)
+
+set(DEPENDS retroplayer_messages)
 
 core_add_library(retroplayer_savestates)
+add_dependencies(retroplayer_savestates retroplayer_messages)
