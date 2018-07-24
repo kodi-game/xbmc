@@ -31,6 +31,7 @@ namespace JOYSTICK
 namespace GAME
 {
   class CGameClient;
+  class CGameClientController;
   class CGameClientHardware;
   class CGameClientJoystick;
   class CGameClientKeyboard;
@@ -90,6 +91,7 @@ namespace GAME
 
     // Private input helpers
     void LoadTopology();
+    void SetControllerLayouts(const ControllerVector &controllers);
     void ProcessJoysticks();
     PortMap MapJoysticks(const PERIPHERALS::PeripheralVector &peripheralJoysticks,
                          const JoystickMap &gameClientjoysticks) const;
@@ -103,6 +105,8 @@ namespace GAME
 
     // Input properties
     std::unique_ptr<CGameClientTopology> m_topology;
+    using ControllerLayoutMap = std::map<std::string, std::unique_ptr<CGameClientController>>;
+    ControllerLayoutMap m_controllerLayouts;
     JoystickMap m_joysticks;
     PortMap m_portMap;
     std::unique_ptr<CGameClientKeyboard> m_keyboard;
