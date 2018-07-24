@@ -119,9 +119,44 @@ void CGameClientInput::Stop()
   CloseKeyboard();
 }
 
+bool CGameClientInput::HasFeature(const std::string &controllerId, const std::string &featureName) const
+{
+  bool bHasFeature = false;
+
+  try
+  {
+    bHasFeature = m_struct.toAddon.HasFeature(controllerId.c_str(), featureName.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught in HasFeature()", m_gameClient.ID().c_str());
+
+    // Fail gracefully
+    bHasFeature = true;
+  }
+
+  return bHasFeature;
+}
+
 bool CGameClientInput::AcceptsInput() const
 {
   return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_GAME;
+}
+
+bool CGameClientInput::InputEvent(const game_input_event &event)
+{
+  bool bHandled = false;
+
+  try
+  {
+    bHandled = m_struct.toAddon.InputEvent(&event);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught in InputEvent()", m_gameClient.ID().c_str());
+  }
+
+  return bHandled;
 }
 
 void CGameClientInput::LoadTopology()
@@ -243,7 +278,7 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr &controller)
 
   if (bSuccess)
   {
-    m_keyboard.reset(new CGameClientKeyboard(m_gameClient, controllerId, m_struct.toAddon, keyboards.at(0).get()));
+    m_keyboard.reset(new CGameClientKeyboard(m_gameClient, controllerId, keyboards.at(0).get()));
     return true;
   }
 
@@ -321,7 +356,7 @@ bool CGameClientInput::OpenMouse(const ControllerPtr &controller)
 
   if (bSuccess)
   {
-    m_mouse.reset(new CGameClientMouse(m_gameClient, controllerId, m_struct.toAddon, mice.at(0).get()));
+    m_mouse.reset(new CGameClientMouse(m_gameClient, controllerId, mice.at(0).get()));
     return true;
   }
 
@@ -404,7 +439,7 @@ bool CGameClientInput::OpenJoystick(const std::string &portAddress, const Contro
   {
     PERIPHERALS::EventLockHandlePtr lock = CServiceBroker::GetPeripherals().RegisterEventLock();
 
-    m_joysticks[portAddress].reset(new CGameClientJoystick(m_gameClient, portAddress, controller, m_struct.toAddon));
+    m_joysticks[portAddress].reset(new CGameClientJoystick(m_gameClient, portAddress, controller));
     ProcessJoysticks();
 
     return true;
