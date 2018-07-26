@@ -48,6 +48,8 @@ CGameClientInput::~CGameClientInput()
 void CGameClientInput::Initialize()
 {
   LoadTopology();
+
+  ActivateControllers(m_controllers);
 }
 
 void CGameClientInput::Start()
@@ -62,7 +64,7 @@ void CGameClientInput::Start()
         return port.PortType() == PORT_TYPE::KEYBOARD;
       });
 
-    OpenKeyboard(it->CompatibleControllers().at(0).Controller());
+    OpenKeyboard(it->ActiveController().Controller());
   }
 
   // Open mouse
@@ -75,7 +77,7 @@ void CGameClientInput::Start()
         return port.PortType() == PORT_TYPE::MOUSE;
       });
 
-    OpenMouse(it->CompatibleControllers().at(0).Controller());
+    OpenMouse(it->ActiveController().Controller());
   }
 
   // Open joysticks
@@ -84,7 +86,7 @@ void CGameClientInput::Start()
   {
     if (port.PortType() == PORT_TYPE::CONTROLLER && !port.CompatibleControllers().empty())
     {
-      ControllerPtr controller = port.CompatibleControllers().at(0).Controller();
+      ControllerPtr controller = port.ActiveController().Controller();
       OpenJoystick(port.Address(), controller);
     }
   }
@@ -96,6 +98,8 @@ void CGameClientInput::Start()
 void CGameClientInput::Deinitialize()
 {
   Stop();
+
+  m_controllers.Clear();
 }
 
 void CGameClientInput::Stop()
@@ -156,6 +160,15 @@ void CGameClientInput::LoadTopology()
 
   CGameClientTopology topology(std::move(hardwarePorts));
   m_controllers = topology.GetControllerTree();
+}
+
+void CGameClientInput::ActivateControllers(CControllerHub &hub)
+{
+  for (auto &port : hub.Ports())
+  {
+    port.SetActiveController(0);
+    ActivateControllers(port.ActiveController().Hub());
+  }
 }
 
 bool CGameClientInput::SupportsKeyboard() const
