@@ -33,7 +33,8 @@ using namespace GAME;
 
 CGameClientController::CGameClientController(CGameClientInput &input, ControllerPtr controller) :
   m_input(input),
-  m_controller(std::move(controller))
+  m_controller(std::move(controller)),
+  m_controllerId(m_controller->ID())
 {
   // Generate arrays of features
   for (const CControllerFeature &feature : m_controller->Features())
@@ -90,7 +91,7 @@ game_controller_layout CGameClientController::TranslateController() const
 {
   game_controller_layout controllerStruct{};
 
-  controllerStruct.controller_id = const_cast<char*>(m_controller->ID().c_str());
+  controllerStruct.controller_id = const_cast<char*>(m_controllerId.c_str());
   controllerStruct.provides_input = m_controller->Layout().Topology().ProvidesInput();
 
   if (!m_digitalButtons.empty())

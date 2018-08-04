@@ -56,6 +56,7 @@ namespace GAME
     const ControllerPtr m_controller;
 
     // Buffer parameters
+    std::string m_controllerId;
     std::vector<char*> m_digitalButtons;
     std::vector<char*> m_analogButtons;
     std::vector<char*> m_analogSticks;
