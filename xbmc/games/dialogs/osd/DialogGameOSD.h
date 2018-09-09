@@ -20,6 +20,13 @@ namespace GAME
     CDialogGameOSD();
 
     ~CDialogGameOSD() override = default;
+
+    // Implementation of CGUIWindow via CGUIDialog
+    void OnDeinitWindow(int nextWindowID) override;
+
+  protected:
+    // Implementation of CGUIWindow via CGUIDialog
+    void OnInitWindow() override;
  };
 }
 }
