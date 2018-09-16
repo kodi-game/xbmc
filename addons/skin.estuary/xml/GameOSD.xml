@@ -37,7 +37,7 @@
 							<width>640</width>
 							<height>640</height>
 						</control>
-						<control type="button" id="1103">
+						<control type="button">
 							<description>Button to close the dialog</description>
 							<top>0</top>
 							<bottom>0</bottom>

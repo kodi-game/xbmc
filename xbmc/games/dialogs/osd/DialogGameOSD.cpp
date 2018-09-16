@@ -7,61 +7,58 @@
  */
 
 #include "DialogGameOSD.h"
-#include "games/controllers/guicontrols/GUIGameController.h"
+#include "DialogGameOSDHelp.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
-#include "utils/StringUtils.h"
+#include "utils/log.h"
 #include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace GAME;
 
-static constexpr int CONTROL_OSD_HELP_TEXT = 1101;
-static constexpr int CONTROL_OSD_GAME_CONTROLLER = 1102;
-
 CDialogGameOSD::CDialogGameOSD() :
-  CGUIDialog(WINDOW_DIALOG_GAME_OSD, "GameOSD.xml")
+  CGUIDialog(WINDOW_DIALOG_GAME_OSD, "GameOSD.xml"),
+  m_helpDialog(new CDialogGameOSDHelp(*this))
 {
   // Initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;
 }
 
-void CDialogGameOSD::OnInitWindow()
+bool CDialogGameOSD::OnMessage(CGUIMessage& message)
 {
-  CGUIDialog::OnInitWindow();
-
-  // Set help text
-  // "Press {0:s} to open the menu."
-  std::string helpText = StringUtils::Format(g_localizeStrings.Get(35235), "Select + X");
-  SET_CONTROL_LABEL(CONTROL_OSD_HELP_TEXT, helpText);
-
-  // Set controller
-  if (CServiceBroker::IsServiceManagerUp())
+  switch (message.GetMessage())
   {
-    CGameServices& gameServices = CServiceBroker::GetGameServices();
-
-    ControllerPtr controller = gameServices.GetController("game.controller.snes");
-    if (controller)
+    case GUI_MSG_WINDOW_DEINIT:
     {
-      //! @todo Activate controller for all game controller controls
-      CGUIGameController* guiController = dynamic_cast<CGUIGameController*>(GetControl(CONTROL_OSD_GAME_CONTROLLER));
-      if (guiController != nullptr)
-        guiController->ActivateController(controller);
+      // Intercept the close action if a help control is visible
+      if (m_helpDialog->IsVisible() && CServiceBroker::IsServiceManagerUp())
+      {
+        // Check if the help dialog should be shown
+        GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+        if (gameSettings.ShowOSDHelp())
+        {
+          // Block close action and don't show help dialog in the future
+          CLog::Log(LOGDEBUG, "------ Game OSD deinit intercepted by help dialog ------");
+          gameSettings.SetShowOSDHelp(false);
+          return true;
+        }
+      }
+      break;
     }
+    default:
+      break;
   }
+
+  return CGUIDialog::OnMessage(message);
 }
 
-void CDialogGameOSD::OnDeinitWindow(int nextWindowID)
+void CDialogGameOSD::OnInitWindow()
 {
-  CGUIDialog::OnDeinitWindow(nextWindowID);
+  // Init parent class
+  CGUIDialog::OnInitWindow();
 
-  if (CServiceBroker::IsServiceManagerUp())
-  {
-    // Hide OSD help
-    GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
-    gameSettings.SetShowOSDHelp(false);
-  }
+  // Init help dialog
+  m_helpDialog->OnInitWindow();
 }

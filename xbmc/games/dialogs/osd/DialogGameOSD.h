@@ -14,6 +14,8 @@ namespace KODI
 {
 namespace GAME
 {
+  class CDialogGameOSDHelp;
+
   class CDialogGameOSD : public CGUIDialog
   {
   public:
@@ -21,12 +23,15 @@ namespace GAME
 
     ~CDialogGameOSD() override = default;
 
-    // Implementation of CGUIWindow via CGUIDialog
-    void OnDeinitWindow(int nextWindowID) override;
+    // Implementation of CGUIControl via CGUIDialog
+    bool OnMessage(CGUIMessage& message) override;
 
   protected:
     // Implementation of CGUIWindow via CGUIDialog
     void OnInitWindow() override;
+
+  private:
+    std::unique_ptr<CDialogGameOSDHelp> m_helpDialog;
  };
 }
 }
