@@ -149,6 +149,14 @@ public:
    */
   CGUIWindow* GetWindow(int id) const;
 
+  /*! \brief Return the dialog with the given ID or null
+   * \tparam T The dialog class type
+   * \param id The dialog id
+   * \return The dialog with the given type \code{T} or null
+   */
+  template<typename T, typename std::enable_if<std::is_base_of<CGUIDialog,T>::value>::type* = nullptr>
+  T* GetDialogindow(int id) const { return dynamic_cast<T *>(GetDialog(id)); };
+
   /*! \brief Return the dialog window with the given id or null.
    *
    * \param id the dialog window id
