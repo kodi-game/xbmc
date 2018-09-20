@@ -82,10 +82,6 @@ bool CGameWindowFullScreen::OnAction(const CAction &action)
   switch (action.GetID())
   {
   case ACTION_SHOW_OSD:
-  {
-    ToggleOSD();
-    return true;
-  }
   case ACTION_TRIGGER_OSD:
   {
     TriggerOSD();
@@ -207,20 +203,6 @@ void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
   CGUIWindow::OnDeinitWindow(nextWindowID);
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false); //! @todo
-}
-
-void CGameWindowFullScreen::ToggleOSD()
-{
-  CGUIDialog *pOSD = GetOSD();
-  if (pOSD != nullptr)
-  {
-    if (pOSD->IsDialogRunning())
-      pOSD->Close();
-    else
-      pOSD->Open();
-  }
-
-  MarkDirtyRegion();
 }
 
 void CGameWindowFullScreen::TriggerOSD()
