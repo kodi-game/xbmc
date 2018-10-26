@@ -763,7 +763,9 @@ void CMMALRenderer::Run()
             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB_HALF;
         }
 
-        if (interlace_method == VS_INTERLACEMETHOD_NONE && !yuv16)
+        bool encodingChanged = (last_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || last_interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF) !=
+            (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF);
+        if ((interlace_method == VS_INTERLACEMETHOD_NONE || encodingChanged) && !yuv16)
         {
           if (m_deint_input)
             DestroyDeinterlace();
