@@ -2118,6 +2118,15 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 /// @{
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`VideoFilter`</b>,
+///                  \anchor RetroPlayer_VideoFilter
+///                  _string_,
+///     Returns the video filter of the currently-playing game.\n
+///     The following values are possible:
+///     - nearest (Nearest-neighbor, i.e. pixellate)
+///     - linear (Bilinear, i.e. smooth blur)
+///     - <path to shader> (not supported yet)
+///   }
 ///   \table_row3{   <b>`StretchMode`</b>,
 ///                  \anchor RetroPlayer_StretchMode
 ///                  _string_,
@@ -2128,11 +2137,21 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 ///     - fullscreen
 ///     - original
 ///   }
+///   \table_row3{   <b>`VideoRotation`</b>,
+///                  \anchor RetroPlayer_VideoRotation
+///                  _string_,
+///     Returns the video rotation of the currently-playing game
+///     in degrees counter-clockwise.\n
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 /// @}
-const infomap retroplayer[] =  {{ "stretchmode",            RETROPLAYER_STRETCHMODE},
+const infomap retroplayer[] =
+{
+  { "videofilter",            RETROPLAYER_VIDEO_FILTER},
+  { "stretchmode",            RETROPLAYER_STRETCH_MODE},
+  { "videorotation",          RETROPLAYER_VIDEO_ROTATION},
 };
 
 const infomap player_process[] =
