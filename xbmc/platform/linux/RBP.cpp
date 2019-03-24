@@ -14,7 +14,9 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
+#ifdef TARGET_RASPBERRY_PI
 #include "cores/omxplayer/OMXImage.h"
+#endif
 #include <interface/mmal/mmal.h>
 
 #include <sys/ioctl.h>
@@ -66,9 +68,13 @@ typedef int vc_image_t_size_check[(sizeof(VC_IMAGE_T) == 64) * 2 - 1];
 CRBP::CRBP()
 {
   m_initialized     = false;
+#ifdef TARGET_RASPBERRY_PI
   m_omx_initialized = false;
+#endif
   m_DllBcmHost      = new DllBcmHost();
+#ifdef TARGET_RASPBERRY_PI
   m_OMX             = new COMXCore();
+#endif
   m_display = DISPMANX_NO_HANDLE;
   m_mb = mbox_open();
   vcsm_init();
@@ -79,7 +85,9 @@ CRBP::CRBP()
 CRBP::~CRBP()
 {
   Deinitialize();
+#ifdef TARGET_RASPBERRY_PI
   delete m_OMX;
+#endif
   delete m_DllBcmHost;
 }
 
@@ -95,9 +103,11 @@ bool CRBP::Initialize()
 
   m_DllBcmHost->bcm_host_init();
 
+#ifdef TARGET_RASPBERRY_PI
   m_omx_initialized = m_OMX->Initialize();
   if(!m_omx_initialized)
     return false;
+#endif
 
   char response[80] = "";
   m_arm_mem = 0;
@@ -122,8 +132,10 @@ bool CRBP::Initialize()
   if (!m_gui_resolution_limit)
     m_gui_resolution_limit = m_gpu_mem < 128 ? 720:1080;
 
+#ifdef TARGET_RASPBERRY_PI
   g_OMXImage.Initialize();
   m_omx_image_init = true;
+#endif
   return true;
 }
 
@@ -264,20 +276,26 @@ uint32_t CRBP::LastVsync()
 
 void CRBP::Deinitialize()
 {
+#ifdef TARGET_RASPBERRY_PI
   if (m_omx_image_init)
     g_OMXImage.Deinitialize();
 
   if(m_omx_initialized)
     m_OMX->Deinitialize();
+#endif
 
   m_DllBcmHost->bcm_host_deinit();
 
   if(m_initialized)
     m_DllBcmHost->Unload();
 
+#ifdef TARGET_RASPBERRY_PI
   m_omx_image_init  = false;
+#endif
   m_initialized     = false;
+#ifdef TARGET_RASPBERRY_PI
   m_omx_initialized = false;
+#endif
   if (m_mb)
     mbox_close(m_mb);
   m_mb = 0;

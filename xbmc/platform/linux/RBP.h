@@ -19,7 +19,9 @@
 #endif
 
 #include "DllBCM.h"
+#ifdef TARGET_RASPBERRY_PI
 #include "OMXCore.h"
+#endif
 #include "xbmc/utils/CPUInfo.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -91,7 +93,9 @@ public:
   int GetGUIResolutionLimit() { return m_gui_resolution_limit; }
   // stride can be null for packed output
   unsigned char *CaptureDisplay(int width, int height, int *stride, bool swap_red_blue, bool video_only = true);
+#ifdef TARGET_RASPBERRY_PI
   DllOMX *GetDllOMX() { return m_OMX ? m_OMX->GetDll() : NULL; }
+#endif
   uint32_t LastVsync(int64_t &time);
   uint32_t LastVsync();
   uint32_t WaitVsync(uint32_t target = ~0U);
@@ -102,20 +106,26 @@ public:
 private:
   DllBcmHost *m_DllBcmHost;
   bool       m_initialized;
+#ifdef TARGET_RASPBERRY_PI
   bool       m_omx_initialized;
   bool       m_omx_image_init;
+#endif
   int        m_arm_mem;
   int        m_gpu_mem;
   int        m_gui_resolution_limit;
   bool       m_codec_mpg2_enabled;
   bool       m_codec_wvc1_enabled;
+#ifdef TARGET_RASPBERRY_PI
   COMXCore   *m_OMX;
+#endif
   DISPMANX_DISPLAY_HANDLE_T m_display;
   CCriticalSection m_vsync_lock;
   XbmcThreads::ConditionVariable m_vsync_cond;
   uint32_t m_vsync_count;
   int64_t m_vsync_time;
+#ifdef TARGET_RASPBERRY_PI
   class DllLibOMXCore;
+#endif
   CCriticalSection m_critSection;
 
   int m_mb;

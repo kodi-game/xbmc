@@ -1,5 +1,6 @@
 set(SOURCES OptionalsReg.cpp
             WinSystemGbm.cpp
+            VideoSyncPi.cpp
             GBMUtils.cpp
             DRMUtils.cpp
             DRMLegacy.cpp
@@ -9,6 +10,7 @@ set(SOURCES OptionalsReg.cpp
 
 set(HEADERS OptionalsReg.h
             WinSystemGbm.h
+            VideoSyncPi.h
             GBMUtils.h
             DRMUtils.h
             DRMLegacy.h

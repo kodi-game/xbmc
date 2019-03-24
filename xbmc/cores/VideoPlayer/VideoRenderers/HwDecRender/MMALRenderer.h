@@ -21,6 +21,7 @@
 #include "threads/Thread.h"
 #include "threads/IRunnable.h"
 #include "utils/Geometry.h"
+#include "platform/linux/RBP.h"
 
 // worst case number of buffers. 12 for decoder. 8 for multi-threading in ffmpeg. NUM_BUFFERS for renderer.
 // Note, generally these won't necessarily result in allocated pictures
