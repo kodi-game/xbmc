@@ -48,6 +48,9 @@ if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
                       DllOMX.h
                       OMXClock.h
                       OMXCore.h)
+else()
+  list(APPEND SOURCES RBP.cpp)
+  list(APPEND HEADERS RBP.h)
 endif()
 
 if(HAVE_SSE4_1)
