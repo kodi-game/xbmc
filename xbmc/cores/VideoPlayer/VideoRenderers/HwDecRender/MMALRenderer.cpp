@@ -745,7 +745,9 @@ void CMMALRenderer::Run()
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
 
         // advanced deinterlace requires 3 frames of context so disable when showing stills
+#if !defined(HAVE_GBM)
         if (omvb->m_stills)
+#endif
         {
           if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
              interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
