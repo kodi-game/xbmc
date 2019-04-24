@@ -1280,6 +1280,9 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
   region.noaspect = MMAL_TRUE;
   region.mode = MMAL_DISPLAY_MODE_LETTERBOX;
 
+  region.set |= MMAL_DISPLAY_SET_LAYER;
+  region.layer = -128;
+
   if (m_renderOrientation == 90)
     region.transform = MMAL_DISPLAY_ROT90;
   else if (m_renderOrientation == 180)
