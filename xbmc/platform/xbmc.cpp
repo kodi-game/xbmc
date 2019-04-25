@@ -8,7 +8,7 @@
 
 #include "Application.h"
 
-#ifdef TARGET_RASPBERRY_PI
+#if 1//def TARGET_RASPBERRY_PI
 #include "platform/linux/RBP.h"
 #endif
 
@@ -36,7 +36,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
     return status;
   }
 
-#ifdef TARGET_RASPBERRY_PI
+#if 1//def TARGET_RASPBERRY_PI
   if(!g_RBP.Initialize())
     return false;
   g_RBP.LogFirmwareVersion();
