@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DRMUtils.h"
+#include "platform/linux/RBP.h"
 
 namespace KODI
 {
@@ -36,6 +37,7 @@ private:
   bool m_need_modeset;
   bool m_active = true;
   drmModeAtomicReq *m_req = nullptr;
+  DISPMANX_ELEMENT_HANDLE_T m_dispman_display = 0;
 };
 
 }

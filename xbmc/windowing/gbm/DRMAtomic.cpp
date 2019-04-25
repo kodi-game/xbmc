@@ -118,10 +118,20 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
   if (m_need_modeset)
   {
     flags |= DRM_MODE_ATOMIC_ALLOW_MODESET;
-    m_need_modeset = false;
+    if (m_dispman_display != DISPMANX_NO_HANDLE)
+    {
+      g_RBP.CloseDisplay(m_dispman_display);
+      m_dispman_display = DISPMANX_NO_HANDLE;
+    }
   }
 
   DrmAtomicCommit(!drm_fb ? 0 : drm_fb->fb_id, flags, rendered, videoLayer);
+
+  if (m_need_modeset)
+  {
+    m_need_modeset = false;
+    m_dispman_display = g_RBP.OpenDisplay(0);
+  }
 }
 
 bool CDRMAtomic::InitDrm()
