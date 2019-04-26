@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/Process/rbpi/ProcessInfoPi.h"
 
 #include "OptionalsReg.h"
 #include "platform/linux/XTimeUtils.h"
@@ -44,6 +45,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   CDVDFactoryCodec::ClearHWVideoCodecs();
 
   CLinuxRendererGLES::Register();
+  CProcessInfoPi::Register();
   RETRO::CRPProcessInfoGbm::Register();
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
 
