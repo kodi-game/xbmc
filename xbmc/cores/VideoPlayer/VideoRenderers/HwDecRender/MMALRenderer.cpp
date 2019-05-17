@@ -194,6 +194,9 @@ std::vector<CMMALPool::MMALEncodingTable> CMMALPool::mmal_encoding_table =
   { AV_PIX_FMT_YUV420P14,MMAL_ENCODING_I420_16, },
   { AV_PIX_FMT_YUV420P16,MMAL_ENCODING_I420_16, },
   { AV_PIX_FMT_SAND128,  MMAL_ENCODING_YUVUV128 },
+  { AV_PIX_FMT_RPI,      MMAL_ENCODING_YUVUV128 },
+  { AV_PIX_FMT_RPI4_8,   MMAL_ENCODING_YUVUV128 },
+  { AV_PIX_FMT_RPI4_10,  MMAL_ENCODING_YUV10_COL },
   { AV_PIX_FMT_SAND64_10,MMAL_ENCODING_YUVUV64_16 },
   { AV_PIX_FMT_SAND64_16,MMAL_ENCODING_YUVUV64_16 },
   { AV_PIX_FMT_RGBA,     MMAL_ENCODING_RGBA, },
@@ -234,7 +237,7 @@ void CMMALPool::Configure(AVPixelFormat format, int width, int height, int align
   if (m_mmal_format != MMAL_ENCODING_UNKNOWN)
   {
     m_geo = g_RBP.GetFrameGeometry(m_mmal_format, alignedWidth, alignedHeight);
-    if (m_mmal_format != MMAL_ENCODING_YUVUV128 && m_mmal_format != MMAL_ENCODING_YUVUV64_16 )
+    if (m_mmal_format != MMAL_ENCODING_YUVUV128 && m_mmal_format != MMAL_ENCODING_YUVUV64_16 && m_mmal_format != MMAL_ENCODING_YUV10_COL )
     {
       if (alignedWidth)
       {
