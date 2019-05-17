@@ -364,7 +364,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
 
 unsigned CDecoder::GetAllowedReferences()
 {
-  return 6;
+  return 7;
 }
 
 IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
