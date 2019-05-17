@@ -459,6 +459,7 @@ AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short vi
     geo.setHeightY((video_height + 15) & ~15);
     geo.setHeightC(geo.getHeightY() >> 1);
     geo.setPlanesC(2);
+    geo.setStripeIsYc(1);
     break;
   case MMAL_ENCODING_I420_16:
     geo.setBitsPerPixel(10);
@@ -467,6 +468,7 @@ AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short vi
     geo.setHeightY((video_height + 15) & ~15);
     geo.setHeightC(geo.getHeightY() >> 1);
     geo.setPlanesC(2);
+    geo.setStripeIsYc(1);
     break;
   case MMAL_ENCODING_OPAQUE:
     geo.setStrideY(video_width);
@@ -487,6 +489,14 @@ AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short vi
     geo.setHeightC(img.pitch / stripe_w - geo.getHeightY());
     geo.setPlanesC(1);
     geo.setStripes((video_width + stripe_w - 1) / stripe_w);
+    geo.setStripeIsYc(1);
+    if (geo.getHeightY() * stripe_w > img.pitch)
+    {
+        // "tall" sand - all C blocks now follow Y
+        geo.setHeightY(img.pitch / stripe_w);
+        geo.setHeightC(geo.getHeightY());
+        geo.setStripeIsYc(0);
+    }
     break;
   }
   case MMAL_ENCODING_YUVUV64_16:
@@ -505,6 +515,25 @@ AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short vi
     geo.setHeightC(img.pitch / stripe_w - geo.getHeightY());
     geo.setPlanesC(1);
     geo.setStripes((video_width * 2 + stripe_w - 1) / stripe_w);
+    geo.setStripeIsYc(1);
+    break;
+  }
+  case  MMAL_ENCODING_YUV10_COL:
+  {
+    VC_IMAGE_T img = {};
+    img.type = VC_IMAGE_YUV10COL;
+    img.width = video_width;
+    img.height = video_height;
+    int rc = get_image_params(GetMBox(), &img);
+    assert(rc == 0);
+    const unsigned int stripe_w = 128;
+    geo.setStrideY(stripe_w);
+    geo.setStrideC(stripe_w);
+    geo.setHeightY(((intptr_t)img.extra.uv.u - (intptr_t)img.image_data) / stripe_w);
+    geo.setHeightC(img.pitch / stripe_w - geo.getHeightY());
+    geo.setPlanesC(1);
+    geo.setStripes(((video_width * 4 + 2) / 3 + stripe_w - 1) / stripe_w);
+    geo.setStripeIsYc(1);
     break;
   }
   default: assert(0);

@@ -38,9 +38,11 @@ public:
   unsigned int getStripes() { return stripes; }
   unsigned int getBitsPerPixel() { return bits_per_pixel; }
   unsigned int getBytesPerPixel() { return (bits_per_pixel + 7) >> 3; }
+  unsigned int getStripeIsYc() { return stripe_is_yc; }
   unsigned int getSizeY() { return stride_y * height_y; }
   unsigned int getSizeC() { return stride_c * height_c; }
   unsigned int getSize() { return (getSizeY() + getSizeC() * getPlanesC()) * getStripes(); }
+  unsigned int getOffsetU() { return stripe_is_yc ? getSizeY() : getSizeY() * stripes; }
   void setStrideY(unsigned int v) { stride_y = v; }
   void setHeightY(unsigned int v) { height_y = v; }
   void setStrideC(unsigned int v) { stride_c = v; }
@@ -49,6 +51,7 @@ public:
   void setStripes(unsigned int v) { stripes = v; }
   void setBitsPerPixel(unsigned int v) { bits_per_pixel = v; }
   void setBytesPerPixel(unsigned int v) { bits_per_pixel = v * 8; }
+  void setStripeIsYc(unsigned int v) { stripe_is_yc = v; }
 private:
   unsigned int stride_y = 0;
   unsigned int height_y = 0;
@@ -57,6 +60,7 @@ private:
   unsigned int planes_c = 0;
   unsigned int stripes = 0;
   unsigned int bits_per_pixel = 0;
+  unsigned int stripe_is_yc = 0;
 };
 
 class CGPUMEM
