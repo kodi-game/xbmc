@@ -68,13 +68,13 @@ typedef int vc_image_t_size_check[(sizeof(VC_IMAGE_T) == 64) * 2 - 1];
 CRBP::CRBP()
 {
   m_initialized     = false;
-#ifdef TARGET_RASPBERRY_PI
+//#ifdef TARGET_RASPBERRY_PI
   m_omx_initialized = false;
-#endif
+//#endif
   m_DllBcmHost      = new DllBcmHost();
-#ifdef TARGET_RASPBERRY_PI
+//#ifdef TARGET_RASPBERRY_PI
   m_OMX             = new COMXCore();
-#endif
+//#endif
   m_display = DISPMANX_NO_HANDLE;
   m_mb = mbox_open();
   vcsm_init();
@@ -103,11 +103,11 @@ bool CRBP::Initialize()
 
   m_DllBcmHost->bcm_host_init();
 
-#ifdef TARGET_RASPBERRY_PI
+//#ifdef TARGET_RASPBERRY_PI
   m_omx_initialized = m_OMX->Initialize();
   if(!m_omx_initialized)
     return false;
-#endif
+//#endif
 
   char response[80] = "";
   m_arm_mem = 0;
@@ -278,13 +278,13 @@ uint32_t CRBP::LastVsync()
 
 void CRBP::Deinitialize()
 {
-#ifdef TARGET_RASPBERRY_PI
-  if (m_omx_image_init)
-    g_OMXImage.Deinitialize();
+//#ifdef TARGET_RASPBERRY_PI
+//  if (m_omx_image_init)
+//    g_OMXImage.Deinitialize();
 
   if(m_omx_initialized)
     m_OMX->Deinitialize();
-#endif
+//#endif
 
   m_DllBcmHost->bcm_host_deinit();
 
@@ -295,9 +295,9 @@ void CRBP::Deinitialize()
   m_omx_image_init  = false;
 #endif
   m_initialized     = false;
-#ifdef TARGET_RASPBERRY_PI
+//#ifdef TARGET_RASPBERRY_PI
   m_omx_initialized = false;
-#endif
+//#endif
   if (m_mb)
     mbox_close(m_mb);
   m_mb = 0;

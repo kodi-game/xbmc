@@ -25,6 +25,7 @@
 #include "DRMLegacy.h"
 #include "OffScreenModeSetting.h"
 #include "messaging/ApplicationMessenger.h"
+#include "cores/AudioEngine/Sinks/AESinkPi.h"
 
 using namespace KODI::WINDOWING::GBM;
 
@@ -34,6 +35,9 @@ CWinSystemGbm::CWinSystemGbm() :
   m_libinput(new CLibInputHandler)
 {
   std::string envSink;
+
+  CAESinkPi::Register();
+
   if (getenv("KODI_AE_SINK"))
     envSink = getenv("KODI_AE_SINK");
   if (StringUtils::EqualsNoCase(envSink, "ALSA"))
