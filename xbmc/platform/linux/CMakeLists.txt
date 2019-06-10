@@ -39,7 +39,7 @@ if(DBUS_FOUND)
                       DBusUtil.h)
 endif()
 
-if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
+#if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
   list(APPEND SOURCES RBP.cpp
                       OMXClock.cpp
                       OMXCore.cpp)
@@ -48,10 +48,10 @@ if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
                       DllOMX.h
                       OMXClock.h
                       OMXCore.h)
-else()
-  list(APPEND SOURCES RBP.cpp)
-  list(APPEND HEADERS RBP.h)
-endif()
+#else()
+#  list(APPEND SOURCES RBP.cpp)
+#  list(APPEND HEADERS RBP.h)
+#endif()
 
 if(HAVE_SSE4_1)
   add_subdirectory(sse4)
