@@ -494,7 +494,9 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
        CLog::Log(LOGERROR, "%s::%s Failed to enable zero copy mode on %s (status=%x %s)", CLASSNAME, __func__, m_vout_input->name, status, mmal_status_to_string(status));
 
     m_vout_input->format->type = MMAL_ES_TYPE_VIDEO;
-    if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
+    if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT2020)
+      m_vout_input->format->es->video.color_space = MMAL_COLOR_SPACE_REC2020;
+    else if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
       m_vout_input->format->es->video.color_space = MMAL_COLOR_SPACE_ITUR_BT709;
     else if (CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT601)
       m_vout_input->format->es->video.color_space = MMAL_COLOR_SPACE_ITUR_BT601;
@@ -939,6 +941,7 @@ bool CMMALRenderer::Configure(const VideoPicture &picture, float fps, unsigned i
   m_renderOrientation = orientation;
 
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
+             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
              GetFlagsStereoMode(picture.stereoMode);
 
