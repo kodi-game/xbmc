@@ -14,14 +14,12 @@ varying vec4 m_cord0;
 
 void main ()
 {
-  vec4 rgb;
-
-  rgb = texture2D(m_samp0, m_cord0.xy);
+  vec3 rgb = texture2D(m_samp0, m_cord0.xy).rgb;
 
 #if defined(KODI_LIMITED_RANGE)
-  rgb.rgb *= (235.0 - 16.0) / 255.0;
-  rgb.rgb += 16.0 / 255.0;
+  rgb *= (235.0 - 16.0) / 255.0;
+  rgb += 16.0 / 255.0;
 #endif
 
-  gl_FragColor = vec4(rgb.rgb, 1.0);
+  gl_FragColor = vec4(rgb, 1.0);
 }
