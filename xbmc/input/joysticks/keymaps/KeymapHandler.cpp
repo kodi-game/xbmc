@@ -15,6 +15,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
 #include "input/IKeymapEnvironment.h"
+#include "input/InputManager.h"
 #include "input/InputTranslator.h"
 
 #include <algorithm>
@@ -25,9 +26,10 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-CKeymapHandler::CKeymapHandler(IActionListener *actionHandler, const IKeymap *keymap) :
+CKeymapHandler::CKeymapHandler(IActionListener* actionHandler, const IKeymap* keymap, CInputManager& inputManager) :
   m_actionHandler(actionHandler),
-  m_keymap(keymap)
+  m_keymap(keymap),
+  m_inputManager(inputManager)
 {
   assert(m_actionHandler != nullptr);
   assert(m_keymap != nullptr);
@@ -60,6 +62,10 @@ std::string CKeymapHandler::ControllerID() const
 
 bool CKeymapHandler::AcceptsInput(const FeatureName& feature) const
 {
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (!m_inputManager.IsControllerEnabled())
+    return false;
+
   if (HasAction(CJoystickUtils::MakeKeyName(feature)))
     return true;
 
@@ -77,6 +83,10 @@ bool CKeymapHandler::OnButtonPress(const FeatureName& feature, bool bPressed)
   if (bPressed && m_easterEgg && m_easterEgg->OnButtonPress(feature))
     return true;
 
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (bPressed && !m_inputManager.IsControllerEnabled())
+    return true;
+
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
 
   IKeyHandler *handler = GetKeyHandler(keyName);
@@ -88,6 +98,10 @@ void CKeymapHandler::OnButtonHold(const FeatureName& feature, unsigned int holdT
   if (m_easterEgg && m_easterEgg->IsCapturing())
     return;
 
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (!m_inputManager.IsControllerEnabled())
+    return;
+
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
 
   IKeyHandler *handler = GetKeyHandler(keyName);
@@ -97,6 +111,10 @@ void CKeymapHandler::OnButtonHold(const FeatureName& feature, unsigned int holdT
 bool CKeymapHandler::OnButtonMotion(const FeatureName& feature, float magnitude, unsigned int motionTimeMs)
 {
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
+
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (magnitude != 0.0f && !m_inputManager.IsControllerEnabled())
+    return true;
 
   IKeyHandler *handler = GetKeyHandler(keyName);
   return handler->OnAnalogMotion(magnitude, motionTimeMs);
@@ -113,6 +131,10 @@ bool CKeymapHandler::OnAnalogStickMotion(const FeatureName& feature, float x, fl
 
   // Calculate the magnitude projected onto that direction
   const float magnitude = std::max(std::fabs(x), std::fabs(y));
+
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (magnitude != 0.0f && !m_inputManager.IsControllerEnabled())
+    return true;
 
   // Deactivate directions in which the stick is not pointing first
   for (auto dir : CJoystickUtils::GetAnalogStickDirections())
@@ -138,6 +160,10 @@ bool CKeymapHandler::OnWheelMotion(const FeatureName& feature, float position, u
   // Calculate the magnitude projected onto that direction
   const float magnitude = std::fabs(position);
 
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (magnitude != 0.0f && !m_inputManager.IsControllerEnabled())
+    return true;
+
   // Deactivate directions in which the wheel is not pointing first
   for (auto dir : CJoystickUtils::GetWheelDirections())
   {
@@ -162,6 +188,10 @@ bool CKeymapHandler::OnThrottleMotion(const FeatureName& feature, float position
   // Calculate the magnitude projected onto that direction
   const float magnitude = std::fabs(position);
 
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (magnitude != 0.0f && !m_inputManager.IsControllerEnabled())
+    return true;
+
   // Deactivate directions in which the throttle is not pointing first
   for (auto dir : CJoystickUtils::GetThrottleDirections())
   {
@@ -178,6 +208,12 @@ bool CKeymapHandler::OnThrottleMotion(const FeatureName& feature, float position
 
 bool CKeymapHandler::OnAccelerometerMotion(const FeatureName& feature, float x, float y, float z)
 {
+  const bool bActive = (x != 0.0f || y != 0.0f || z != 0.0f);
+
+  // Disallow controller-to-UI-key translation if disabled in the settings
+  if (bActive && !m_inputManager.IsControllerEnabled())
+    return true;
+
   return false; //! @todo implement
 }
 

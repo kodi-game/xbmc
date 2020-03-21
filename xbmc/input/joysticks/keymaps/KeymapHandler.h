@@ -17,6 +17,7 @@
 #include <memory>
 #include <string>
 
+class CInputManager;
 class IActionListener;
 class IKeymap;
 
@@ -34,7 +35,7 @@ namespace JOYSTICK
                          public IInputHandler
   {
   public:
-    CKeymapHandler(IActionListener *actionHandler, const IKeymap *keymap);
+    CKeymapHandler(IActionListener* actionHandler, const IKeymap* keymap, CInputManager& inputManager);
 
     virtual ~CKeymapHandler() = default;
 
@@ -79,6 +80,7 @@ namespace JOYSTICK
     // Construction parameters
     IActionListener *const m_actionHandler;
     const IKeymap *const m_keymap;
+    CInputManager& m_inputManager;
 
     // Handlers for individual keys
     std::map<std::string, std::unique_ptr<IKeyHandler>> m_keyHandlers; // Key name -> handler

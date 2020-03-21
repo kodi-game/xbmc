@@ -82,7 +82,7 @@ void CKeymapHandling::LoadKeymaps()
     std::unique_ptr<IKeymap> keymap(new CKeymap(std::move(windowKeymap), m_environment));
 
     // Create keymap handler
-    std::unique_ptr<IInputHandler> inputHandler(new CKeymapHandler(&inputManager, keymap.get()));
+    std::unique_ptr<IInputHandler> inputHandler(new CKeymapHandler(&inputManager, keymap.get(), inputManager));
 
     // Register the handler with the input provider
     m_inputProvider->RegisterInputHandler(inputHandler.get(), m_pPromiscuous);
