@@ -255,7 +255,8 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
     if (hasRight)
     {
       width = std::max(0.0f, right - left); // if left=0, this fills to size of parent
-      hasLeft = hasWidth =true;
+      hasLeft = true;
+      hasWidth = true;
     }
     else if (hasCenter)
     {
@@ -268,13 +269,14 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode *node, const char *leftTa
       { // centre given, so fill to edge of parent
         width = std::max(0.0f, std::min(parentSize - center, center) * 2);
         left = center - width/2;
-        hasLeft = hasWidth = true;
+        hasLeft = true;
+	hasWidth = true;
       }
     }
     else if (hasLeft) // neither right nor center specified
     {
       width = std::max(0.0f, parentSize - left); // if left=0, this fills to parent
-	  hasWidth = true;
+      hasWidth = true;
     }
   }
   return hasLeft && hasWidth;
