@@ -130,6 +130,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   const float sourceAspectRatio =
       static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
 
+  const SCALINGMETHOD scaleMode = m_renderSettings.VideoSettings().GetScalingMethod();
   const STRETCHMODE stretchMode = m_renderSettings.VideoSettings().GetRenderStretchMode();
   const unsigned int rotationDegCCW =
       (sourceRotationDegCCW + m_renderSettings.VideoSettings().GetRenderRotation()) % 360;
@@ -141,7 +142,20 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
   GetScreenDimensions(screenWidth, screenHeight, screenPixelRatio);
 
   // Entire target rendering area for the video (including black bars)
-  const CRect viewRect = m_context.GetViewWindow();
+  CRect viewRect = m_context.GetViewWindow();
+
+  // Update dimensions if display hardware scaling is enabled
+  if (scaleMode == SCALINGMETHOD::NEAREST && stretchMode == STRETCHMODE::Original &&
+      m_context.DisplayHardwareScalingEnabled())
+  {
+    screenWidth = static_cast<float>(sourceWidth);
+    screenHeight = static_cast<float>(sourceHeight);
+    screenPixelRatio = 1.0f;
+    viewRect.x1 = 0.0f;
+    viewRect.y1 = 0.0f;
+    viewRect.x2 = static_cast<float>(sourceWidth);
+    viewRect.y2 = static_cast<float>(sourceHeight);
+  }
 
   // Calculate pixel ratio and zoom amount
   float pixelRatio = 1.0f;
